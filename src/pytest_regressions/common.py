@@ -133,12 +133,24 @@ def perform_regression_check(
         else:
             basename = ""
         basename += re.sub(r"[\W]", "_", request.node.name)
+    baseline_path = request.config.getoption("baseline_directory")
+    output_path = request.config.getoption("output_directory")
 
+    assert not ((baseline_path is None and output_path is not None) or (baseline_path is not None and output_path is None)), "Baseline path and output path have to either both be set or neither"
+
+    custom_paths = False
+    if baseline_path and output_path:
+        custom_paths = True
+    assert not (custom_paths and fullpath), "Fullpath and custom paths cannot be chosen at the same time"
     if fullpath:
         filename = source_filename = Path(fullpath)
     else:
-        filename = datadir / (basename + extension)
-        source_filename = original_datadir / (basename + extension)
+        if custom_paths:
+            filename = None
+            source_filename = Path(baseline_path) / Path(original_datadir.name) / (basename + extension)
+        else:
+            filename = datadir / (basename + extension)
+            source_filename = original_datadir / (basename + extension)
 
     def make_location_message(banner: str, filename: Path, aux_files: List[str]) -> str:
         msg = [banner, f"- {filename}"]
@@ -153,7 +165,7 @@ def perform_regression_check(
         source_filename.parent.mkdir(parents=True, exist_ok=True)
         dump_fn(source_filename)
         dump_aux_fn(source_filename)
-    elif not filename.is_file():
+    elif not source_filename.is_file():
         source_filename.parent.mkdir(parents=True, exist_ok=True)
         dump_fn(source_filename)
         aux_created = dump_aux_fn(source_filename)
@@ -164,7 +176,10 @@ def perform_regression_check(
         pytest.fail(msg)
     else:
         if obtained_filename is None:
-            if fullpath:
+            if custom_paths:
+                obtained_filename = Path((output_path / Path(original_datadir.name) / basename).with_suffix(extension))
+                obtained_filename.parent.mkdir(parents=True, exist_ok=True)
+            elif fullpath:
                 obtained_filename = (datadir / basename).with_suffix(
                     ".obtained" + extension
                 )
@@ -174,7 +189,7 @@ def perform_regression_check(
         dump_fn(Path(obtained_filename))
 
         try:
-            check_fn(Path(obtained_filename), Path(filename))
+            check_fn(Path(obtained_filename), Path(source_filename))
         except AssertionError:
             if force_regen:
                 dump_fn(source_filename)

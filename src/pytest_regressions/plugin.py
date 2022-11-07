@@ -33,6 +33,17 @@ def pytest_addoption(parser: Any) -> None:
         default=False,
         help="Do not ignore the names of the test classes when composing the name of the regression data files.",
     )
+    group.addoption(
+        "--output-directory",
+        default=None,
+        help="Save the outputs of each run in this directory instead, the --output-directory has to be set as well",
+        type=str
+    )
+    group.addoption(
+        "--baseline-directory",
+        default=None,
+        help="Save the baseline of each run in this directory instead, the --baseline-directoy has to be set as well",
+    )
 
 
 @pytest.fixture

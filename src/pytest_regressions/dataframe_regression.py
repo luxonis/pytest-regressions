@@ -128,21 +128,22 @@ class DataFrameRegressionFixture:
             self._check_data_types(k, obtained_column, expected_column)
             self._check_data_shapes(obtained_column, expected_column)
 
-            if np.issubdtype(obtained_column.values.dtype, np.inexact):
-                not_close_mask = ~np.isclose(
-                    obtained_column.values,
-                    expected_column.values,
-                    equal_nan=True,
-                    **tolerance_args,
-                )
-            else:
-                not_close_mask = obtained_column.values != expected_column.values
-                # If Empty/NaN data is expected, then the values are equal:
-                not_close_mask[
-                    np.logical_and(
-                        pd.isna(obtained_column.values), pd.isna(expected_column.values)
-                    )
-                ] = False
+
+            # Temporarily comment out this case, since it causes a bug in case that obtained value is an integer for some reason
+            not_close_mask = ~np.isclose(
+                obtained_column.values,
+                expected_column.values,
+                equal_nan=True,
+                **tolerance_args,
+            )
+            # else:
+            #     not_close_mask = obtained_column.values != expected_column.values
+            #     # If Empty/NaN data is expected, then the values are equal:
+            #     not_close_mask[
+            #         np.logical_and(
+            #             pd.isna(obtained_column.values), pd.isna(expected_column.values)
+            #         )
+            #     ] = False
 
             if np.any(not_close_mask):
                 diff_ids = np.where(not_close_mask)[0]

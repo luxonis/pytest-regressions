@@ -177,7 +177,7 @@ def perform_regression_check(
     else:
         if obtained_filename is None:
             if custom_paths:
-                obtained_filename = Path((output_path / Path(original_datadir.name) / basename).with_suffix(extension))
+                obtained_filename = Path(output_path) / Path(original_datadir.name) / (basename + extension)
                 obtained_filename.parent.mkdir(parents=True, exist_ok=True)
             elif fullpath:
                 obtained_filename = (datadir / basename).with_suffix(

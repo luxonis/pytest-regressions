@@ -1,3 +1,19 @@
+2.5.0 (2023-08-31)
+------------------
+
+* Dropped support for EOL Python 3.6 and Python 3.7.
+* Added support for Python 3.11.
+
+2.4.3 (2023-08-30)
+------------------
+
+* `#137 <https://github.com/ESSS/pytest-regressions/pull/137>`__: (Bugfix) Make ``dataframe_regression`` compatible with classes inheriting from ``pandas.DataFrame``.
+
+2.4.2 (2023-01-12)
+------------------
+
+* `#119 <https://github.com/ESSS/pytest-regressions/pull/119>`__: (Bugfix) Properly handle missing index ``0``.
+
 2.4.1 (2022-09-17)
 ------------------
 

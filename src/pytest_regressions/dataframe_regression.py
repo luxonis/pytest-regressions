@@ -237,7 +237,7 @@ class DataFrameRegressionFixture:
 
         __tracebackhide__ = True
 
-        assert type(data_frame) is pd.DataFrame, (
+        assert isinstance(data_frame, pd.DataFrame), (
             "Only pandas DataFrames are supported on dataframe_regression fixture.\n"
             "Object with type '%s' was given." % (str(type(data_frame)),)
         )
@@ -245,7 +245,7 @@ class DataFrameRegressionFixture:
         for column in data_frame.columns:
             array = data_frame[column]
             # Skip assertion if an array of strings
-            if (array.dtype == "O") and (type(array[0]) is str):
+            if (array.dtype == "O") and (type(array.iloc[0]) is str):
                 continue
             # Rejected: timedelta, datetime, objects, zero-terminated bytes, unicode strings and raw data
             assert array.dtype not in ["m", "M", "O", "S", "a", "U", "V"], (

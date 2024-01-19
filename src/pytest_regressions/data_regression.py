@@ -49,6 +49,7 @@ class DataRegressionFixture:
         ``basename`` and ``fullpath`` are exclusive.
         """
         __tracebackhide__ = True
+
         def dump(filename: Path) -> None:
             """Dump dict contents to the given filename"""
             import yaml

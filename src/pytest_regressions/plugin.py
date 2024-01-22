@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from .ndarrays_regression import NDArraysRegressionFixture
     from .file_regression import FileRegressionFixture
     from .num_regression import NumericRegressionFixture
+    from .num_relative_regression import NumericRelativeRegressionFixture
     from .image_regression import ImageRegressionFixture
 
 
@@ -162,6 +163,33 @@ def num_regression(
     from .num_regression import NumericRegressionFixture
 
     return NumericRegressionFixture(datadir, original_datadir, request)
+
+
+@pytest.fixture
+def num_relative_regression(
+    datadir: Path, original_datadir: Path, request: pytest.FixtureRequest
+) -> "NumericRelativeRegressionFixture":
+    """
+    Example usage:
+
+    # baseline data is:
+    # data1 = 1.1 * np.ones(5000)
+    # data2 = 2.2 * np.ones(5000)
+
+    data1 = 2.5 * np.ones(5000)
+    data2 = 2.1 * np.ones(5000)
+    num_relative_regression.check({"data1": data1, "data2": data2},
+                                  compare_operator=">=",
+                                  max_absolute_diff=-0.1)
+    data1 = 0.6 * np.ones(5000)
+    data2 = 2.7 * np.ones(5000)
+    num_relative_regression.check({"data1": data1, "data2": data2},
+                                  compare_operator="<=",
+                                  max_absolute_diff=0.5)
+    """
+    from .num_relative_regression import NumericRelativeRegressionFixture
+
+    return NumericRelativeRegressionFixture(datadir, original_datadir, request)
 
 
 @pytest.fixture
